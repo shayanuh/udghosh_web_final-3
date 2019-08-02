@@ -3,6 +3,8 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="ca/favicon/logo.png" />
+
 <style>
 body {
   font-family: "Lato", sans-serif;
@@ -25,7 +27,7 @@ body {
 .question {
     margin-left:10%;
     margin-top:8%;
-    background-color:rgb(231, 227, 227);
+    background-color:skyblue;
     
     border-radius:10px;
     border:none;
@@ -115,7 +117,8 @@ input[type=radio] {
         if (diff <= 0) {
             // add one second so that the count down starts at the full duration
             // example 05:00 not 04:59
-            start = Date.now() + 1000;
+            
+            document.getElementById("form").submit()
         }
     };
     // we don't want to wait a full second before the timer starts
@@ -198,14 +201,16 @@ setInterval(function () {
     <span id="clock"></span><br>
     <br><hr>
     
-  <b style="margin-left:1%">Username : <%= user %> </b>
+  <b style="margin-left:1%;font-size:75%;">Username : <%= user %> </b>
   <br><hr>
-  <b style="margin-left:1%">Time Remaining : <span id="time"></span></b>
+  <b style="margin-left:1%;font-size:75%">Time Remaining : <span id="time"></span></b>
   <br><hr>
-  <b style="margin-left:1%">Maximum Marks : 120 <span id="time"></span></b>
+  <b style="margin-left:1%;font-size:75%">Maximum Marks : 120 <span id="time"></span></b>
   <br><hr>
   <h2 style="margin-left:3%;">Instructions</h2>
-  <ul style="font-size:126%;margin-right:1%">
+  <ul style="font-size:100%;margin-right:1%">
+        <li style="text-align: left; color:red;font-weight: bold;">Do not Reload the page.On Reloading the page all your data will be lost and Udghosh will not be responsible for any such loss.</li>
+<br>
       <li>This is the preliminary round.</li><br>
       <li>The duration of the quiz is 20 minutes.</li><br>
       <li>There are a total of 60 questions </li><br>
@@ -220,7 +225,7 @@ setInterval(function () {
   <!-- <h1 style="margin-left: 45%;color:rgb(0, 26, 255)">NOSSQ 2019</h1> -->
     <h3 style="text-align:center;color:black">Screening Round - Senior Category</h3>
     <h4 style="text-align:center;color:black">(Class 11th-12th)</h4>
-    <form method="POST" action="/submit3" onchange="attempt()">
+    <form method="POST" action="/c470c7600c5c28a89sdsbbc35d4a4sdcefb7" id ="form" onchange="attempt()">
             <input type="text" style= "display: none" name ="userid" value = <%=user %> >
 
 
