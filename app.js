@@ -1314,8 +1314,8 @@ app.get('/nossq68', function(req,res,next){
 // for class 6th to 8th
 app.post('/nossqcheck1', function(req,res,next){
   var uid = "nossq68/" + req.body.userid;
+  console.log(req.body.userid);
   var newMessageRef= database.ref(uid).once('value').then(function(snapshot) {
-      console.log(snapshot.val());
       if(snapshot.val() != null){
         console.log('Username found');
         res.render('mainportal1', {user: req.body.userid, msg: ""});
@@ -1328,19 +1328,45 @@ app.post('/nossqcheck1', function(req,res,next){
 
 // for class 6 to 8
 app.post('/nossq68start', function(req,res,next){
+
   var uid = "nossq68/" + req.body.userid;
   var newMessageRef= database.ref(uid).once('value').then(function(snapshot) {
       if(snapshot.val() != null){
         console.log('Username found');
-        res.render('mainpaper1', {user: req.body.userid});
+        if (snapshot.val().B == "true"){
+          res.render('nossq1', {msg: "You have already appeared for the quiz."})
+        }
+        else{
+          database.ref(uid).set({
+            timeIn : new Date(Date.now()).toLocaleString(),
+            B : 'true'
+          });
+          res.render('mainpaper1', {user: req.body.userid});
+      }
       }else{
         console.log('Username not found');
         res.render('mainportal1', {user: req.body.userid, msg: "Something went wrong, Please try again later."})
       }
   });
 });
+// to submit to database for 6 to 8
+app.post('/submit1', function(req,res,next){
 
-// for class 9 to 10
+      var uid = "nossq68/" + req.body.userid;
+      var timeOut = new Date(Date.now()).toLocaleString();
+      database.ref(uid).child("timeOut").set(timeOut);
+      
+      if(true){
+      database.ref(uid).child("responses").set(req.body);
+      res.render('quizOver');
+      }else{
+        res.render('mainportal1', {user: "req.body.userid", msg : "You are not that intelligent."});
+      }
+    
+});
+
+
+  // for class 9 to 10
 app.get('/nossq910', function(req,res,next){
   res.render('nossq2', {msg:""});
 });
@@ -1351,12 +1377,49 @@ app.post('/nossqcheck2', function(req,res,next){
   var newMessageRef= database.ref(uid).once('value').then(function(snapshot) {
       if(snapshot.val() != null){
         console.log('Username found');
-        res.render('mainportal2', {user: req.body.userid});
+        res.render('mainportal2', {user: req.body.userid, msg : ""});
       }else{
         console.log('Username not found');
         res.render('nossq2', {msg: "User not found, Please try again."})
       }
   });
+});
+
+app.post('/nossq910start', function(req,res,next){
+  var uid = "nossq910/" + req.body.userid;
+  var newMessageRef= database.ref(uid).once('value').then(function(snapshot) {
+      if(snapshot.val() != null){
+        console.log('Username found');
+        if (snapshot.val().B == "true"){
+          res.render('nossq2', {msg: "You have already appeared for the quiz."})
+        }
+        else{
+          database.ref(uid).set({
+            timeIn : new Date(Date.now()).toLocaleString(),
+            B : 'true'
+          });
+          res.render('mainpaper2', {user: req.body.userid});
+      }
+      }else{
+        console.log('Username not found');
+        res.render('mainportal2', {user: req.body.userid, msg: "Something went wrong, Please try again later."})
+      }
+  });
+});
+
+app.post('/submit2', function(req,res,next){
+  
+      var uid = "nossq910/" + req.body.userid;
+      var timeOut = new Date(Date.now()).toLocaleString();
+      database.ref(uid).child("timeOut").set(timeOut);
+      
+      if(true){
+      database.ref(uid).child("responses").set(req.body);
+      res.render('quizOver');
+      }else{
+        res.render('mainportal2', {user: "req.body.userid", msg : "You are not that intelligent."});
+      }
+    
 });
 
 
@@ -1371,10 +1434,48 @@ app.post('/nossqcheck3', function(req,res,next){
   var newMessageRef= database.ref(uid).once('value').then(function(snapshot) {
       if(snapshot.val() != null){
         console.log('Username found');
-        res.render('mainportal3', {user: req.body.userid});
+        res.render('mainportal3', {user: req.body.userid, msg : ""});
       }else{
         console.log('Username not found');
         res.render('nossq3', {msg: "User not found, Please try again."})
       }
   });
+});
+
+
+app.post('/nossq1112start', function(req,res,next){
+  var uid = "nossq1112/" + req.body.userid;
+  var newMessageRef= database.ref(uid).once('value').then(function(snapshot) {
+      if(snapshot.val() != null){
+        console.log('Username found');
+        if (snapshot.val().B == "true"){
+          res.render('nossq3', {msg: "You have already appeared for the quiz."})
+        }
+        else{
+          database.ref(uid).set({
+            timeIn : new Date(Date.now()).toLocaleString(),
+            B : 'true'
+          });
+          res.render('mainpaper3', {user: req.body.userid});
+      }
+      }else{
+        console.log('Username not found');
+        res.render('mainportal3', {user: req.body.userid, msg: "Something went wrong, Please try again later."})
+      }
+  });
+});
+
+app.post('/submit3', function(req,res,next){
+
+      var uid = "nossq1112/" + req.body.userid;
+      var timeOut = new Date(Date.now()).toLocaleString();
+      database.ref(uid).child("timeOut").set(timeOut);
+      
+      if(true){
+      database.ref(uid).child("responses").set(req.body);
+      res.render('quizOver');
+      }else{
+        res.render('mainportal3', {user: "req.body.userid", msg : "You are not that intelligent."});
+      }
+    
 });
