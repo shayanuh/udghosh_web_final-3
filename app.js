@@ -151,93 +151,39 @@ if(req.body.password1 == req.body.password2) {
  
   code = uid.substring(0,6);
  
-  const output = `
-    <p>We have recieved your message at ${new Date(Date.now()).toLocaleString()}</p>
-    <p>Your one time code is: ${code}</p>
-    <p>*This is an automatically generated mail. Please do not reply. For any further queries contact Udghosh core team*</p>`
+  // const output = `
+  //   <p>We have recieved your message at ${new Date(Date.now()).toLocaleString()}</p>
+  //   <p>Your one time code is: ${code}</p>
+  //   <p>*This is an automatically generated mail. Please do not reply. For any further queries contact Udghosh core team*</p>`
  
-  let transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: 'udghoshiitkresponses@gmail.com',
-      pass: 'responses1234'
-    },
-    tls:{
-      rejectUnauthorized:false
-    }
-  });
+  // let transporter = nodemailer.createTransport({
+  //   host: 'smtp.gmail.com',
+  //   port: 587,
+  //   secure: false,
+  //   auth: {
+  //     user: 'udghoshiitkresponses@gmail.com',
+  //     pass: 'responses1234'
+  //   },
+  //   tls:{
+  //     rejectUnauthorized:false
+  //   }
+  // });
  
  
-  let mailOptions = {
-      from: '"Udghosh" <udghoshiitkresponses@gmail.com>',
-      to: req.body.mail,//  list of receivers
-      subject: 'Verification Code for Udghosh registration',
-      html: output
-  };
- 
-  nameid = encrypt(req.body.name, "udghosh");
- 
-  mailid = encrypt(req.body.mail, "udghosh");
- 
-  let ref2 = firestore.collection('udghoshUsernames').doc(nameid);
- 
-  let ref = firestore.collection('udghoshMails').doc(mailid);
- 
-  let getDoc = ref2.get()
-  .then(doc => {
-    if (!doc.exists) {
- 
-        // unique username
-       
-        let getDoc = ref.get()
-          .then(doc => {
-            if (!doc.exists) {
- 
-              // mail unique
- 
-              // new user
-              transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                  res.render('index_1', {msg: 'Something went wrong, Please try again later.'})
-                }
-                else{
-                  res.render('index_3', {msg: 'Verification mail sent. Please also check your Spam section for the Mail verification code.',  name : req.body.name, mail : req.body.mail, password : req.body.password1, phone: req.body.contact.toString()})
-                }
-                });
-              }
-            else{
-              res.render('index_1', {msg: 'Sorry, this Mail Id is already Registered.'});
-            }
-            })
-          .catch(err => {
-                res.render('index_1', {msg: 'Something went wrong, Please try again later.'});
-              });
-    }else{
-      res.render('index_1', {msg: 'This username already exists, Please try again.'});
-    }
-  })
-  .catch(err => {
-      res.render('index_1', {msg: 'Something went wrong, Please try again later.'});
-  });
- 
-  }else{
-        res.render('index_1', {msg: 'The Passwords are inconsistent, Please try again.'});
-  };
- 
-});
- 
-// step 2
-app.post('/22d9e9c7277c9857eedb195d410018d6rs', function(req,res,next){
+  // let mailOptions = {
+  //     from: '"Udghosh" <udghoshiitkresponses@gmail.com>',
+  //     to: req.body.mail,//  list of receivers
+  //     subject: 'Verification Code for Udghosh registration',
+  //     html: output
+  // };
  
   var item ={
     Username : req.body.name,
     Mail : req.body.mail,
-    password : req.body.password.toString(),
+    password : req.body.password1,
     Contengency_Leader_Name : '',
     Head_Coach : '',
-    Contact1: req.body.contact.toString(),
+    Contact1: req.body.contact,
     Contact2: '',
     College: '',
     City: '',
@@ -261,13 +207,9 @@ app.post('/22d9e9c7277c9857eedb195d410018d6rs', function(req,res,next){
     Time: conversion(new Date(Date.now()).toLocaleString())
   };
  
-  uid = encrypt(req.body.name, req.body.password);
- 
-  mailid = encrypt(req.body.mail, "udghosh");
- 
   nameid = encrypt(req.body.name, "udghosh");
  
-  truecode = uid.substring(0,6);
+  mailid = encrypt(req.body.mail, "udghosh");
  
   let ref = firestore.collection('udghoshRegisteration').doc(uid);
  
@@ -281,12 +223,11 @@ app.post('/22d9e9c7277c9857eedb195d410018d6rs', function(req,res,next){
  
       // user is unique
  
-      if (truecode == req.body.code){
+      let getDoc2 = ref2.get()
+      .then(doc2 => {
+        if(!doc2.exists){
+
         ref.set(item).then(function(){
-          // registered
- 
-          let getDoc2 = ref2.get()
-          .then(doc2 => {
            
             // vulnerable to console attacks
  
@@ -299,83 +240,194 @@ app.post('/22d9e9c7277c9857eedb195d410018d6rs', function(req,res,next){
             };
  
             // chod
+
             ref2.set(item7).then(function(){
               ref3.set(item8).then(function(){
                 res.render('index_1', {msg: 'Sucessfully Registered'});
               })
               .catch(function(error){
-                res.render('index_3', {msg: 'Something went wrong, Please try again.',name : req.body.name, mail : req.body.mail, password : req.body.password, phone: req.body.contact.toString()});
+                res.render('index_1', {msg: 'Something went wrong, Please try again.'});
               });
             }).catch(function(error){
-                res.render('index_3', {msg: 'Something went wrong, Please try again.',name : req.body.name, mail : req.body.mail, password : req.body.password, phone: req.body.contact.toString()});
+                res.render('index_1', {msg: 'Something went wrong, Please try again.'});
               });
+            })
+            }
+            else{
+              res.render('index_1', {msg: 'Sorry, this Mail Id is already Registered.'});
+            }
  
           })
           .catch(err => {
               // chod
               res.render('index_1', {msg: 'Something went wrong, Please try again later.'});
-          });
         }).catch(function(error){
-          res.render('index_3', {msg: 'Something went wrong, Please try again later.',name : req.body.name, mail : req.body.mail, password : req.body.password, phone: req.body.contact.toString()});
+          res.render('index_1', {msg: 'Something went wrong, Please try again later.'});
         });
-      }
-      else{
-        res.render('index_3', {msg: 'Verification Code is inconsistent, Please try again.',name : req.body.name, mail : req.body.mail, password : req.body.password, phone: req.body.contact.toString()});
-      }
+     
     }else{
-        res.render('index_1', {msg: 'Something went wrong, Please try again later.'});
+        res.render('index_1', {msg: 'This username already exists, Please try again.'});
     }
   })
   .catch(err => {
-      res.render('index_3', {msg: 'Something went wrong, Please try again later.',name : req.body.name, mail : req.body.mail, password : req.body.password, phone: req.body.contact.toString()});
-  });
- 
-});
- 
- // resend code
-app.post('/6a9e12b1307853e8776aaa71549687d7', function(req,res){
-  var input1 = req.body.name;
-  var input2 = req.body.password;
- 
-  var uid = encrypt(input1, input2);
- 
-  var code = uid.substr(0,6);
- 
-  const output = `
-    <p>We have recieved your message at ${new Date(Date.now()).toLocaleString()}</p>
-    <p>Your one time code is: ${code}</p>
-    <p>*This is an automatically generated mail. Please do not reply. For any further queries contact Udghosh core team*</p>`
- 
-  let transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: 'udghoshiitkresponses@gmail.com',
-      pass: 'responses1234'
-    },
-    tls:{
-      rejectUnauthorized:false
-    }
+      res.render('index_1', {msg: 'Something went wrong, Please try again later.'});
   });
  
  
-  let mailOptions = {
-      from: '"Udghosh" <udghoshiitkresponses@gmail.com>',
-      to: req.body.mail,//  list of receivers
-      subject: 'Verification Code for Udghosh registration',
-      html: output
+  }else{
+        res.render('index_1', {msg: 'The Passwords are inconsistent, Please try again.'});
   };
  
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      res.render('index_3', {msg: 'Something went wrong, Please try again later.',name : req.body.name, mail : req.body.mail, password : req.body.password})
-    }
-    else{
-      res.render('index_3', {msg: 'Verification mail successfully resent. Please also check your Spam section for the Mail verification code.',  name : req.body.name, mail : req.body.mail, password : req.body.password1 })
-    }
-    });
 });
+ 
+// // step 2
+// app.post('/22d9e9c7277c9857eedb195d410018d6rs', function(req,res,next){
+ 
+//   var item ={
+//     Username : req.body.name,
+//     Mail : req.body.mail,
+//     password : req.body.password.toString(),
+//     Contengency_Leader_Name : '',
+//     Head_Coach : '',
+//     Contact1: req.body.contact.toString(),
+//     Contact2: '',
+//     College: '',
+//     City: '',
+//     PIN: '',
+//     Atheletics : '',
+//     Badminton : '',
+//     Cricket : '',
+//     Volleyball : '',
+//     Basketball : '',
+//     Skating : '',
+//     Chess : '',
+//     Hockey : '',
+//     Table_Tennis : '',
+//     Lawn_Tennis : '',
+//     Squash : '',
+//     Kho_Kho : '',
+//     Handball : '',
+//     Weightlifting: '',
+//     Powerlifting: '',
+//     Activity: 'False',
+//     Time: conversion(new Date(Date.now()).toLocaleString())
+//   };
+ 
+//   uid = encrypt(req.body.name, req.body.password);
+ 
+//   mailid = encrypt(req.body.mail, "udghosh");
+ 
+//   nameid = encrypt(req.body.name, "udghosh");
+ 
+//   truecode = uid.substring(0,6);
+ 
+  // let ref = firestore.collection('udghoshRegisteration').doc(uid);
+ 
+  // let ref2 = firestore.collection('udghoshMails').doc(mailid);
+ 
+  // let ref3 = firestore.collection('udghoshUsernames').doc(nameid);
+ 
+  // let getDoc = ref.get()
+  // .then(doc => {
+  //   if (!doc.exists) {
+ 
+  //     // user is unique
+ 
+  //     if (truecode == req.body.code){
+  //       ref.set(item).then(function(){
+  //         // registered
+ 
+  //         let getDoc2 = ref2.get()
+  //         .then(doc2 => {
+           
+  //           // vulnerable to console attacks
+ 
+  //           var item7 = {
+  //             Mail: req.body.mail
+  //           };
+ 
+  //           var item8 = {
+  //             Username: req.body.name
+  //           };
+ 
+  //           // chod
+  //           ref2.set(item7).then(function(){
+  //             ref3.set(item8).then(function(){
+  //               res.render('index_1', {msg: 'Sucessfully Registered'});
+  //             })
+  //             .catch(function(error){
+  //               res.render('index_3', {msg: 'Something went wrong, Please try again.',name : req.body.name, mail : req.body.mail, password : req.body.password, phone: req.body.contact.toString()});
+  //             });
+  //           }).catch(function(error){
+  //               res.render('index_3', {msg: 'Something went wrong, Please try again.',name : req.body.name, mail : req.body.mail, password : req.body.password, phone: req.body.contact.toString()});
+  //             });
+ 
+  //         })
+  //         .catch(err => {
+  //             // chod
+  //             res.render('index_1', {msg: 'Something went wrong, Please try again later.'});
+  //         });
+  //       }).catch(function(error){
+  //         res.render('index_3', {msg: 'Something went wrong, Please try again later.',name : req.body.name, mail : req.body.mail, password : req.body.password, phone: req.body.contact.toString()});
+  //       });
+  //     }
+  //     else{
+  //       res.render('index_3', {msg: 'Verification Code is inconsistent, Please try again.',name : req.body.name, mail : req.body.mail, password : req.body.password, phone: req.body.contact.toString()});
+  //     }
+  //   }else{
+  //       res.render('index_1', {msg: 'Something went wrong, Please try again later.'});
+  //   }
+  // })
+  // .catch(err => {
+  //     res.render('index_3', {msg: 'Something went wrong, Please try again later.',name : req.body.name, mail : req.body.mail, password : req.body.password, phone: req.body.contact.toString()});
+  // });
+ 
+// });
+ 
+//  // resend code
+// app.post('/6a9e12b1307853e8776aaa71549687d7', function(req,res){
+//   var input1 = req.body.name;
+//   var input2 = req.body.password;
+ 
+//   var uid = encrypt(input1, input2);
+ 
+//   var code = uid.substr(0,6);
+ 
+//   const output = `
+//     <p>We have recieved your message at ${new Date(Date.now()).toLocaleString()}</p>
+//     <p>Your one time code is: ${code}</p>
+//     <p>*This is an automatically generated mail. Please do not reply. For any further queries contact Udghosh core team*</p>`
+ 
+//   let transporter = nodemailer.createTransport({
+//     host: 'smtp.gmail.com',
+//     port: 587,
+//     secure: false,
+//     auth: {
+//       user: 'udghoshiitkresponses@gmail.com',
+//       pass: 'responses1234'
+//     },
+//     tls:{
+//       rejectUnauthorized:false
+//     }
+//   });
+ 
+ 
+//   let mailOptions = {
+//       from: '"Udghosh" <udghoshiitkresponses@gmail.com>',
+//       to: req.body.mail,//  list of receivers
+//       subject: 'Verification Code for Udghosh registration',
+//       html: output
+//   };
+ 
+//   transporter.sendMail(mailOptions, (error, info) => {
+//     if (error) {
+//       res.render('index_3', {msg: 'Something went wrong, Please try again later.',name : req.body.name, mail : req.body.mail, password : req.body.password})
+//     }
+//     else{
+//       res.render('index_3', {msg: 'Verification mail successfully resent. Please also check your Spam section for the Mail verification code.',  name : req.body.name, mail : req.body.mail, password : req.body.password1 })
+//     }
+//     });
+// });
  
  
 // login
@@ -458,112 +510,53 @@ app.post('/6d932840157263669f6f378fa14ee190', function(req,res,next){
     if(req.body.password1 == req.body.password2) {
       var uid = encrypt(req.body.name, req.body.password1);
    
-      var code = uid.substring(0,6);
+      // var truecode = uid.substring(0,6);
    
-      const output = `
-        <p>We have recieved your message at ${new Date(Date.now()).toLocaleString()}</p>
-        <p>Your one time code is: ${code}</p>
-        <p>*This is an automatically generated mail. Please do not reply. For any further queries contact Udghosh core team*</p>`
+      // const output = `
+      //   <p>We have recieved your message at ${new Date(Date.now()).toLocaleString()}</p>
+      //   <p>Your one time code is: ${code}</p>
+      //   <p>*This is an automatically generated mail. Please do not reply. For any further queries contact Udghosh core team*</p>`
    
-      let transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-          user: 'udghoshiitkresponses@gmail.com',
-          pass: 'responses1234'
-        },
-        tls:{
-          rejectUnauthorized:false
-        }
-      });
+      // let transporter = nodemailer.createTransport({
+      //   host: 'smtp.gmail.com',
+      //   port: 587,
+      //   secure: false,
+      //   auth: {
+      //     user: 'udghoshiitkresponses@gmail.com',
+      //     pass: 'responses1234'
+      //   },
+      //   tls:{
+      //     rejectUnauthorized:false
+      //   }
+      // });
    
    
-      let mailOptions = {
-          from: '"Udghosh" <udghoshiitkresponses@gmail.com>',
-          to: req.body.mail,//  list of receivers
-          subject: 'NOSSQ Code ',
-          html: output
-      };
+      // let mailOptions = {
+      //     from: '"Udghosh" <udghoshiitkresponses@gmail.com>',
+      //     to: req.body.mail,//  list of receivers
+      //     subject: 'NOSSQ Code ',
+      //     html: output
+      // };
    
+      var item ={
+            PrincipalName : '',
+            userName : req.body.name,
+            Mail : req.body.mail,
+            password : req.body.password1,
+            NameOfSchool: '',
+            NoOfStudents: '',
+            Contact1: '',
+            Contact2: '',
+            City: '',
+            PIN: '',
+            Activity: 'False',
+            Time: conversion(new Date(Date.now()).toLocaleString())
+          };
       var nameid = encrypt(req.body.name, "nossq");
-   
+
       var mailid = encrypt(req.body.mail, "nossq");
-   
-      let ref2 = firestore.collection('nossqUsernames').doc(nameid);
-   
-      let ref = firestore.collection('nossqMails').doc(mailid);
-      let getDoc = ref2.get()
-      .then(doc => {
-        if (!doc.exists) {
-   
-            // unique username
-           
-            let getDoc = ref.get()
-              .then(doc => {
-                if (!doc.exists) {
-   
-                  // mail unique
-   
-                  // new user
-                  transporter.sendMail(mailOptions, (error, info) => {
-                    if (error) {
-                      res.render('index_4', {msg: 'Something went wrong, Please try again later.'})
-                    }
-                    else{
-                      res.render('index_5', {msg: 'Verification mail sent. Please also check your Spam section for the Mail verification code.',  name : req.body.name, mail : req.body.mail, password : req.body.password1 })
-                    }
-                    });
-                  }
-                else{
-                  res.render('index_4', {msg: 'Sorry, this Mail Id is already Registered.'});
-                }
-                })
-              .catch(err => {
-                    res.render('index_4', {msg: 'Something went wrong, Please try again later.'});
-                  });
-        }else{
-          res.render('index_4', {msg: 'This username already exists, Please try again.'});
-        }
-      })
-      .catch(err => {
-          res.render('index_4', {msg: 'Something went wrong, Please try again later.'});
-      });
-   
-      }else{
-            res.render('index_4', {msg: 'The Passwords are inconsistent, Please try again.'});
-      };
-   
-    });
- 
- 
-  // step 2
-  app.post('/84109960b0739040331574376a4d759f', function(req,res,next){
- 
-    var item ={
-      PrincipalName : '',
-      userName : req.body.name,
-      Mail : req.body.mail,
-      password : req.body.password.toString(),
-      NameOfSchool: '',
-      NoOfStudents: '',
-      Contact1: '',
-      Contact2: '',
-      City: '',
-      PIN: '',
-      Activity: 'False',
-      Time: conversion(new Date(Date.now()).toLocaleString())
-    };
- 
-    uid = encrypt(req.body.name, req.body.password);
- 
-    mailid = encrypt(req.body.mail, "nossq");
- 
-    nameid = encrypt(req.body.name, "nossq");
- 
-    truecode = uid.substring(0,6);
- 
-    let ref = firestore.collection('nossqregistration').doc(uid);
+
+      let ref = firestore.collection('nossqregistration').doc(uid);
  
     let ref2 = firestore.collection('nossqMails').doc(mailid);
  
@@ -571,17 +564,13 @@ app.post('/6d932840157263669f6f378fa14ee190', function(req,res,next){
  
     let getDoc = ref.get()
     .then(doc => {
-      if (!doc.exists) {
- 
-        // user is unique
- 
-        if (truecode == req.body.code){
-          ref.set(item).then(function(){
-            // registered
- 
+      if (!doc.exists) {                                     
+
             let getDoc2 = ref2.get()
             .then(doc2 => {
-             
+              if(!doc2.exists){
+
+              ref.set(item).then(function(){
               // vulnerable to console attacks
  
               var item7 = {
@@ -598,78 +587,173 @@ app.post('/6d932840157263669f6f378fa14ee190', function(req,res,next){
                   res.render('index_4', {msg: 'Sucessfully Registered'});
                 })
                 .catch(function(error){
-                  res.render('index_5', {msg: 'Something went wrong, Please try again.',name : req.body.name, mail : req.body.mail, password : req.body.password});
+                  res.render('index_4', {msg: 'Something went wrong, Please try again.'});
                 });
               }).catch(function(error){
-                  res.render('index_5', {msg: 'Something went wrong, Please try again.',name : req.body.name, mail : req.body.mail, password : req.body.password});
+                  res.render('index_4', {msg: 'Something went wrong, Please try again.'});
                 });
- 
             })
+          }
+          else{
+            res.render('index_4', {msg: 'Sorry, this Mail Id is already Registered.'});
+          }
+          }).catch(function(error){
+            res.render('index_4', {msg: 'Something went wrong, Please try again later.'});
+          })
             .catch(err => {
                 // chod
                 res.render('index_4', {msg: 'Something went wrong, Please try again later.'});
             });
-          }).catch(function(error){
-            res.render('index_5', {msg: 'Something went wrong, Please try again later.',name : req.body.name, mail : req.body.mail, password : req.body.password});
-          });
-        }
-        else{
-          res.render('index_5', {msg: 'Verification Code is inconsistent, Please try again.',name : req.body.name, mail : req.body.mail, password : req.body.password});
-        }
+          
+          
       }else{
-          res.render('index_4', {msg: 'Something went wrong, Please try again later.'});
+          res.render('index_4', {msg: 'This username already exists, Please try again.'});
       }
     })
     .catch(err => {
-        res.render('index_5', {msg: 'Something went wrong, Please try again later.',name : req.body.name, mail : req.body.mail, password : req.body.password});
+        res.render('index_4', {msg: 'Something went wrong, Please try again later.'});
     });
  
-  });
+      }else{
+            res.render('index_4', {msg: 'The Passwords are inconsistent, Please try again.'});
+      };
+   
+    });
+ 
+ 
+  // // step 2
+  // app.post('/84109960b0739040331574376a4d759f', function(req,res,next){
+ 
+  //   var item ={
+  //     PrincipalName : '',
+  //     userName : req.body.name,
+  //     Mail : req.body.mail,
+  //     password : req.body.password.toString(),
+  //     NameOfSchool: '',
+  //     NoOfStudents: '',
+  //     Contact1: '',
+  //     Contact2: '',
+  //     City: '',
+  //     PIN: '',
+  //     Activity: 'False',
+  //     Time: conversion(new Date(Date.now()).toLocaleString())
+  //   };
+ 
+  //   uid = encrypt(req.body.name, req.body.password);
+ 
+  //   mailid = encrypt(req.body.mail, "nossq");
+ 
+  //   nameid = encrypt(req.body.name, "nossq");
+ 
+  //   truecode = uid.substring(0,6);
+ 
+  //   let ref = firestore.collection('nossqregistration').doc(uid);
+ 
+  //   let ref2 = firestore.collection('nossqMails').doc(mailid);
+ 
+  //   let ref3 = firestore.collection('nossqUsernames').doc(nameid);
+ 
+  //   let getDoc = ref.get()
+  //   .then(doc => {
+  //     if (!doc.exists) {
+ 
+  //       // user is unique
+ 
+  //       if (truecode == req.body.code){
+  //         ref.set(item).then(function(){
+  //           // registered
+ 
+  //           let getDoc2 = ref2.get()
+  //           .then(doc2 => {
+             
+  //             // vulnerable to console attacks
+ 
+  //             var item7 = {
+  //               Mail: req.body.mail
+  //             };
+ 
+  //             var item8 = {
+  //               Username: req.body.name
+  //             };
+ 
+  //             // chod
+  //             ref2.set(item7).then(function(){
+  //               ref3.set(item8).then(function(){
+  //                 res.render('index_4', {msg: 'Sucessfully Registered'});
+  //               })
+  //               .catch(function(error){
+  //                 res.render('index_5', {msg: 'Something went wrong, Please try again.',name : req.body.name, mail : req.body.mail, password : req.body.password});
+  //               });
+  //             }).catch(function(error){
+  //                 res.render('index_5', {msg: 'Something went wrong, Please try again.',name : req.body.name, mail : req.body.mail, password : req.body.password});
+  //               });
+ 
+  //           })
+  //           .catch(err => {
+  //               // chod
+  //               res.render('index_4', {msg: 'Something went wrong, Please try again later.'});
+  //           });
+  //         }).catch(function(error){
+  //           res.render('index_5', {msg: 'Something went wrong, Please try again later.',name : req.body.name, mail : req.body.mail, password : req.body.password});
+  //         });
+  //       }
+  //       else{
+  //         res.render('index_5', {msg: 'Verification Code is inconsistent, Please try again.',name : req.body.name, mail : req.body.mail, password : req.body.password});
+  //       }
+  //     }else{
+  //         res.render('index_4', {msg: 'Something went wrong, Please try again later.'});
+  //     }
+  //   })
+  //   .catch(err => {
+  //       res.render('index_5', {msg: 'Something went wrong, Please try again later.',name : req.body.name, mail : req.body.mail, password : req.body.password});
+  //   });
+ 
+  // });
  
  // nossq resend
-  app.post('/81de12b13078s1e8776aaa71549688a4', function(req,res){
-    var input1 = req.body.name;
-    var input2 = req.body.password;
+  // app.post('/81de12b13078s1e8776aaa71549688a4', function(req,res){
+  //   var input1 = req.body.name;
+  //   var input2 = req.body.password;
  
-    var uid = encrypt(input1, input2);
+  //   var uid = encrypt(input1, input2);
  
-    var code = uid.substr(0,6);
+  //   var code = uid.substr(0,6);
  
-    const output = `
-      <p>We have recieved your message at ${new Date(Date.now()).toLocaleString()}</p>
-      <p>Your one time code is: ${code}</p>
-      <p>*This is an automatically generated mail. Please do not reply. For any further queries contact Udghosh core team*</p>`
+  //   const output = `
+  //     <p>We have recieved your message at ${new Date(Date.now()).toLocaleString()}</p>
+  //     <p>Your one time code is: ${code}</p>
+  //     <p>*This is an automatically generated mail. Please do not reply. For any further queries contact Udghosh core team*</p>`
  
-    let transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: 'udghoshiitkresponses@gmail.com',
-        pass: 'responses1234'
-      },
-      tls:{
-        rejectUnauthorized:false
-      }
-    });
+  //   let transporter = nodemailer.createTransport({
+  //     host: 'smtp.gmail.com',
+  //     port: 587,
+  //     secure: false,
+  //     auth: {
+  //       user: 'udghoshiitkresponses@gmail.com',
+  //       pass: 'responses1234'
+  //     },
+  //     tls:{
+  //       rejectUnauthorized:false
+  //     }
+  //   });
  
  
-    let mailOptions = {
-        from: '"Udghosh" <udghoshiitkresponses@gmail.com>',
-        to: req.body.mail,//  list of receivers
-        subject: 'Verification Code for NOSSQ registration',
-        html: output
-    };
+  //   let mailOptions = {
+  //       from: '"Udghosh" <udghoshiitkresponses@gmail.com>',
+  //       to: req.body.mail,//  list of receivers
+  //       subject: 'Verification Code for NOSSQ registration',
+  //       html: output
+  //   };
  
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        res.render('index_5', {msg: 'Something went wrong, Please try again later.',name : req.body.name, mail : req.body.mail, password : req.body.password})
-      }
-      else{
-        res.render('index_5', {msg: 'Verification mail successfully resent. Please also check your Spam section for the Mail verification code.',  name : req.body.name, mail : req.body.mail, password : req.body.password1 })
-      }
-      });
-  });
+  //   transporter.sendMail(mailOptions, (error, info) => {
+  //     if (error) {
+  //       res.render('index_5', {msg: 'Something went wrong, Please try again later.',name : req.body.name, mail : req.body.mail, password : req.body.password})
+  //     }
+  //     else{
+  //       res.render('index_5', {msg: 'Verification mail successfully resent. Please also check your Spam section for the Mail verification code.',  name : req.body.name, mail : req.body.mail, password : req.body.password1 })
+  //     }
+  //     });
+  // });
  
   // nossq login
   app.post('/7c80234d705934bf8855f208d834ae3b', function(req,res){
