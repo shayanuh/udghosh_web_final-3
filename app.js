@@ -203,6 +203,7 @@ if(req.body.password1 == req.body.password2) {
     Handball : '',
     Weightlifting: '',
     Powerlifting: '',
+    Kabaddi : '',
     Activity: 'False',
     Time: conversion(new Date(Date.now()).toLocaleString())
   };
@@ -492,6 +493,7 @@ app.post('/766d1e56a1f66f223807ad61d106097flo', function(req,res){
                                      sk: datausers['Skating'],
                                      ck:datausers['Cricket'],
                                      hb:datausers['Handball'],
+                                     kbd: datausers['Kabaddi'],
                                      wdv: encrypt(inputusername, "udghosh")});
             });
   })
@@ -976,6 +978,7 @@ app.post('/d23df4d956a710e48bbd0290d09728abrc', function(req,res){
                                      sk: datausers['Skating'],
                                      ck:datausers['Cricket'],
                                      hb:datausers['Handball'],
+                                     kbd: datausers['Kabaddi'],
                                      wdv: encrypt(req.body.name, "udghosh")});
         });
   })
@@ -1062,6 +1065,10 @@ app.post('/b073f1087455e888a841bc3e3eb5eb6cec', function(req,res,next){
   if(req.body.kho != ''){
     item['Kho_Kho'] = req.body.kho;
   };
+   
+  if(req.body.kabaddi != ''){
+    item['kabaddi'] = req.body.kabaddi;
+  };
  
   var keys = encrypt(req.body.name, "udghosh");
   var pass = sessionStorage.getItem(keys);
@@ -1111,6 +1118,7 @@ app.post('/b073f1087455e888a841bc3e3eb5eb6cec', function(req,res,next){
                                      sk: datausers['Skating'],
                                      ck:datausers['Cricket'],
                                      hb:datausers['Handball'],
+                                     kbd: datausers['Kabaddi'],
                                      wdv: encrypt(req.body.name, "udghosh")});
         });
   })
