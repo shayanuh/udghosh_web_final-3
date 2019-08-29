@@ -1067,7 +1067,7 @@ app.post('/b073f1087455e888a841bc3e3eb5eb6cec', function(req,res,next){
   };
    
   if(req.body.kabaddi != ''){
-    item['kabaddi'] = req.body.kabaddi;
+    item['Kabaddi'] = req.body.kabaddi;
   };
  
   var keys = encrypt(req.body.name, "udghosh");
